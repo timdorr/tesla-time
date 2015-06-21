@@ -1,0 +1,18 @@
+{
+  "uuid": "017c5e39-ac44-4ae4-8843-0531effe9bc0",
+  "shortName": "tesla-time",
+  "longName": "tesla-time",
+  "companyName": "MakeAwesomeHappen",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
