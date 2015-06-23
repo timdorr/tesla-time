@@ -3,6 +3,8 @@
 #include "overview.h"
 #include "commands_menu.h"
 
+static Window *overview_window;
+
 static void overview_select_click_handler(ClickRecognizerRef recognizer, void *context) {
   commands_window_push();
 }
@@ -12,8 +14,8 @@ static void overview_click_config_provider(void* context) {
 }
 
 static void window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
+  // Layer *window_layer = window_get_root_layer(window);
+  // GRect bounds = layer_get_bounds(window_layer);
 }
 
 static void window_unload(Window *window) {
