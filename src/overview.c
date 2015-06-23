@@ -8,7 +8,7 @@ static void overview_select_click_handler(ClickRecognizerRef recognizer, void *c
 }
 
 static void overview_click_config_provider(void* context) {
-    window_single_click_subscribe(BUTTON_ID_SELECT, overview_select_click_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, overview_select_click_handler);
 }
 
 static void window_load(Window *window) {
