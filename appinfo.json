@@ -11,7 +11,8 @@
     "watchface": false
   },
   "appKeys": {
-    "vehicle_name": 0
+    "vehicle_name": 0,
+    "rated_miles": 1
   },
   "resources": {
     "media": []

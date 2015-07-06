@@ -110,6 +110,10 @@ function getOverview() {
 	getState("/data_request/vehicle_state", function(response) {
 		Pebble.sendAppMessage({vehicle_name: response.vehicle_name});
 	});
+
+	getState("/data_request/charge_state", function(response) {
+		Pebble.sendAppMessage({rated_miles: response.battery_range});
+	});
 }
 
 /***
