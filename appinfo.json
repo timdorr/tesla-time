@@ -5,12 +5,13 @@
   "companyName": "Tim Dorr",
   "versionLabel": "1.0",
   "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt"],
+  "targetPlatforms": ["basalt"],
   "capabilities": ["configurable"],
   "watchapp": {
     "watchface": false
   },
   "appKeys": {
+    "vehicle_name": 0
   },
   "resources": {
     "media": []
