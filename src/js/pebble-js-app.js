@@ -665,8 +665,10 @@ function getOverview() {
         });
     });
     getState("/data_request/drive_state", function(response) {
-        reverseGeocode(response.latitude, response.longitude, function(data) {
-            jlog(data);
+        reverseGeocode(response.latitude, response.longitude, function(json) {
+            Pebble.sendAppMessage({
+                location: json.results[0].formatted_address.substring(0, 48)
+            });
         });
     });
 }

@@ -1,3 +1,4 @@
 #define KEY_VEHICLE_NAME 0
 #define KEY_RATED_MILES 1
 #define KEY_CHARGING_STATE 2
+#define KEY_LOCATION 3

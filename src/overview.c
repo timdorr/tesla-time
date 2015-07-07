@@ -19,6 +19,9 @@ TextLayer *rated_miles_unit_text;
 TextLayer *charger_text;
 TextLayer *charging_state_text;
 
+TextLayer *location_title_text;
+TextLayer *location_text;
+
 bool loading;
 const int16_t MARGIN = 10;
 
@@ -86,6 +89,13 @@ static void window_load(Window *window) {
   init_text_layer(window_layer, &charging_state_text, 88, 26, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(charger_text, "CHARGER");
+
+
+  init_text_layer(window_layer, &location_title_text, 114, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &location_text, 128, 30, FONT_KEY_GOTHIC_14_BOLD);
+
+  text_layer_set_text(location_title_text, "LOCATION");
+  text_layer_set_overflow_mode(location_text, GTextOverflowModeTrailingEllipsis);
 
   // Horizontal Rule
 

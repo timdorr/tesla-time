@@ -10,6 +10,7 @@ static uint8_t* app_sync_buffer;
 
 char vehicle_name_buffer[32];
 char charging_state_buffer[16];
+char location_buffer[48];
 
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
@@ -30,8 +31,12 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
       set_rated_miles_text(rated_miles_buffer);
     break;
     case KEY_CHARGING_STATE:
-      snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%s", upcase((char*)new_tuple->value->cstring));
+      snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%s", (char*)new_tuple->value->cstring);
       text_layer_set_text(charging_state_text, charging_state_buffer);
+    break;
+    case KEY_LOCATION:
+      snprintf(location_buffer, sizeof(location_buffer), "%s", (char*)new_tuple->value->cstring);
+      text_layer_set_text(location_text, location_buffer);
     break;
   }
 }
@@ -47,11 +52,13 @@ static void init() {
 
   snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%-32s", "Model S");
   snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%-16s", "Unknown");
+  snprintf(location_buffer, sizeof(location_buffer), "%-48s", "Unknown");
 
   Tuplet initial_values[] = {
     TupletStaticCString(KEY_VEHICLE_NAME, vehicle_name_buffer),
     TupletInteger(KEY_RATED_MILES, 0),
-    TupletStaticCString(KEY_CHARGING_STATE, charging_state_buffer)
+    TupletStaticCString(KEY_CHARGING_STATE, charging_state_buffer),
+    TupletStaticCString(KEY_LOCATION, location_buffer)
   };
 
   uint16_t app_sync_buffer_size = dict_calc_buffer_size_from_tuplets(initial_values, ARRAY_LENGTH(initial_values));
