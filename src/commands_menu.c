@@ -38,83 +38,108 @@ static SimpleMenuItem commands_menu_hvac_items[COMMANDS_MENU_HVAC_ITEMS];
 #define COMMANDS_MENU_CHARGING_ITEMS 4
 static SimpleMenuItem commands_menu_charging_items[COMMANDS_MENU_CHARGING_ITEMS];
 
-static void commands_menu_select_callback(int index, void *ctx) {
+static void commands_menu_select_callback(int section, int index, void *ctx) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Menu Item %d", index);
+}
 
+static void commands_menu_vehicle_callback(int index, void *ctx) {
+  commands_menu_select_callback(0, index, ctx);
+}
+
+static void commands_menu_hvac_callback(int index, void *ctx) {
+  commands_menu_select_callback(1, index, ctx);
+}
+
+static void commands_menu_charging_callback(int index, void *ctx) {
+  commands_menu_select_callback(2, index, ctx);
 }
 
 static void populate_commands_menu() {
   int num_items = 0;
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Remote Start"
+    .title = "Remote Start",
+    .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Lock Doors"
+    .title = "Lock Doors",
+    .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Unlock Doors"
+    .title = "Unlock Doors",
+    .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Flash Lights"
+    .title = "Flash Lights",
+    .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Honk Horn"
+    .title = "Honk Horn",
+    .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Move Roof"
+    .title = "Move Roof",
+    .callback = commands_menu_vehicle_callback
   };
 
   num_items = 0;
   commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Start HVAC"
+    .title = "Start HVAC",
+    .callback = commands_menu_hvac_callback
   };
 
   commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Stop HVAC"
+    .title = "Stop HVAC",
+    .callback = commands_menu_hvac_callback
   };
 
   commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Set Temperature"
+    .title = "Set Temperature",
+    .callback = commands_menu_hvac_callback
   };
 
   num_items = 0;
   commands_menu_charging_items[num_items++] = (SimpleMenuItem){
-    .title = "Open Charge Port"
+    .title = "Open Charge Port",
+    .callback = commands_menu_charging_callback
   };
 
   commands_menu_charging_items[num_items++] = (SimpleMenuItem){
-    .title = "Stop Charging"
+    .title = "Stop Charging",
+    .callback = commands_menu_charging_callback
   };
 
   commands_menu_charging_items[num_items++] = (SimpleMenuItem){
-    .title = "Start Charging"
+    .title = "Start Charging",
+    .callback = commands_menu_charging_callback
   };
 
   commands_menu_charging_items[num_items++] = (SimpleMenuItem){
-    .title = "Set Charge Limit"
+    .title = "Set Charge Limit",
+    .callback = commands_menu_charging_callback
   };
 
   commands_menu_sections[0] = (SimpleMenuSection){
-      .title = "Vehicle Controls",
-      .num_items = COMMANDS_MENU_VEHICLE_ITEMS,
-      .items = commands_menu_vehicle_items,
+    .title = "Vehicle Controls",
+    .num_items = COMMANDS_MENU_VEHICLE_ITEMS,
+    .items = commands_menu_vehicle_items,
   };
 
   commands_menu_sections[1] = (SimpleMenuSection){
-      .title = "Climate",
-      .num_items = COMMANDS_MENU_HVAC_ITEMS,
-      .items = commands_menu_hvac_items,
+    .title = "Climate",
+    .num_items = COMMANDS_MENU_HVAC_ITEMS,
+    .items = commands_menu_hvac_items,
   };
 
   commands_menu_sections[2] = (SimpleMenuSection){
-      .title = "Charging",
-      .num_items = COMMANDS_MENU_CHARGING_ITEMS,
-      .items = commands_menu_charging_items,
+    .title = "Charging",
+    .num_items = COMMANDS_MENU_CHARGING_ITEMS,
+    .items = commands_menu_charging_items,
   };
 }
 
