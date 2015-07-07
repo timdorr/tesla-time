@@ -4,6 +4,7 @@
 
 extern TextLayer *vehicle_name_text;
 extern TextLayer *rated_miles_text;
+extern TextLayer *charging_state_text;
 
 void overview_window_push();
 void overview_window_loaded();

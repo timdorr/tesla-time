@@ -4,12 +4,20 @@
 #include "commands_menu.h"
 
 static Window *overview_window;
+
 Layer *loading_overlay_layer;
 TextLayer *loading_text;
+
 TextLayer *vehicle_name_text;
+
 Layer *horizontal_rule_layer;
+
+TextLayer *range_text;
 TextLayer *rated_miles_text;
 TextLayer *rated_miles_unit_text;
+
+TextLayer *charger_text;
+TextLayer *charging_state_text;
 
 bool loading;
 const int16_t MARGIN = 10;
@@ -27,7 +35,7 @@ void set_rated_miles_text(char* rated_miles) {
 
   GSize rm_size = text_layer_get_content_size(rated_miles_text);
   Layer *rated_miles_unit_text_layer = text_layer_get_layer(rated_miles_unit_text);
-  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 38, 50, 30));
+  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 50, 50, 30));
 }
 
 static void draw_horizontal_rule_layer(Layer *layer, GContext *ctx) {
@@ -65,9 +73,19 @@ static void window_load(Window *window) {
   // Text Layers
 
   init_text_layer(window_layer, &vehicle_name_text, 5, 20, FONT_KEY_GOTHIC_18_BOLD);
-  init_text_layer(window_layer, &rated_miles_text, 28, 40, FONT_KEY_LECO_38_BOLD_NUMBERS);
-  init_text_layer(window_layer, &rated_miles_unit_text, 38, 30, FONT_KEY_GOTHIC_28_BOLD);
+
+  init_text_layer(window_layer, &range_text, 32, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_38_BOLD_NUMBERS);
+  init_text_layer(window_layer, &rated_miles_unit_text, 50, 30, FONT_KEY_GOTHIC_28_BOLD);
+
+  text_layer_set_text(range_text, "RANGE");
   text_layer_set_text(rated_miles_unit_text, "mi");
+
+
+  init_text_layer(window_layer, &charger_text, 80, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &charging_state_text, 88, 26, FONT_KEY_GOTHIC_24_BOLD);
+
+  text_layer_set_text(charger_text, "CHARGER");
 
   // Horizontal Rule
 

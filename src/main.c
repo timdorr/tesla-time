@@ -8,6 +8,9 @@
 static AppSync app_sync;
 static uint8_t* app_sync_buffer;
 
+char vehicle_name_buffer[32];
+char charging_state_buffer[16];
+
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
@@ -15,7 +18,6 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     overview_window_loaded();
   }
 
-  static char vehicle_name_buffer[32];
   static char rated_miles_buffer[4];
 
   switch(key) {
@@ -27,11 +29,15 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
       snprintf(rated_miles_buffer, sizeof(rated_miles_buffer), "%d", (int)new_tuple->value->int32);
       set_rated_miles_text(rated_miles_buffer);
     break;
+    case KEY_CHARGING_STATE:
+      snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%s", upcase((char*)new_tuple->value->cstring));
+      text_layer_set_text(charging_state_text, charging_state_buffer);
+    break;
   }
 }
 
 static void sync_error_handler(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d", dict_error);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error - Dictionary: %d AppMessage: %d", dict_error, app_message_error);
 }
 
 static void init() {
@@ -39,9 +45,13 @@ static void init() {
 
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
+  snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%-32s", "Model S");
+  snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%-16s", "Unknown");
+
   Tuplet initial_values[] = {
-    TupletCString(KEY_VEHICLE_NAME, "Model S"),
-    TupletInteger(KEY_RATED_MILES, 0)
+    TupletStaticCString(KEY_VEHICLE_NAME, vehicle_name_buffer),
+    TupletInteger(KEY_RATED_MILES, 0),
+    TupletStaticCString(KEY_CHARGING_STATE, charging_state_buffer)
   };
 
   uint16_t app_sync_buffer_size = dict_calc_buffer_size_from_tuplets(initial_values, ARRAY_LENGTH(initial_values));
