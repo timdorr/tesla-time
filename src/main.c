@@ -11,6 +11,10 @@ static uint8_t* app_sync_buffer;
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
+  if (key == KEY_RATED_MILES && (int)new_tuple->value->int32 != 0) {
+    overview_window_loaded();
+  }
+
   static char vehicle_name_buffer[32];
   static char rated_miles_buffer[4];
 
@@ -36,7 +40,7 @@ static void init() {
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
   Tuplet initial_values[] = {
-    TupletCString(KEY_VEHICLE_NAME, "LOADING..."),
+    TupletCString(KEY_VEHICLE_NAME, "Model S"),
     TupletInteger(KEY_RATED_MILES, 0)
   };
 

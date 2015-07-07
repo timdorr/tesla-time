@@ -4,11 +4,14 @@
 #include "commands_menu.h"
 
 static Window *overview_window;
+Layer *loading_overlay_layer;
+TextLayer *loading_text;
 TextLayer *vehicle_name_text;
 Layer *horizontal_rule_layer;
 TextLayer *rated_miles_text;
 TextLayer *rated_miles_unit_text;
 
+bool loading;
 const int16_t MARGIN = 10;
 
 static void overview_select_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -32,6 +35,13 @@ static void draw_horizontal_rule_layer(Layer *layer, GContext *ctx) {
 
   graphics_context_set_stroke_color(ctx, GColorWhite);
   graphics_draw_line(ctx, GPoint(0, 0), GPoint(bounds.size.w, 0));
+}
+
+static void draw_loading_overlay_layer(Layer *layer, GContext *ctx) {
+  const GRect bounds = layer_get_bounds(layer);
+
+  graphics_context_set_fill_color(ctx, WINDOW_BG_COLOR);
+  graphics_fill_rect(ctx, bounds, 0, GCornerNone);
 }
 
 static GRect init_text_layer(Layer *parent_layer, TextLayer **text_layer, int16_t y, int16_t h, char *font) {
@@ -65,6 +75,22 @@ static void window_load(Window *window) {
   horizontal_rule_layer = layer_create(GRect(MARGIN, hr_y, bounds.size.w - 2 * MARGIN, hr_y));
   layer_set_update_proc(horizontal_rule_layer, draw_horizontal_rule_layer);
   layer_add_child(window_layer, horizontal_rule_layer);
+
+  // Loading Screen
+
+  loading_overlay_layer = layer_create(bounds);
+  layer_set_update_proc(loading_overlay_layer, draw_loading_overlay_layer);
+  layer_add_child(window_layer, loading_overlay_layer);
+
+  loading_text = text_layer_create(GRect(0, bounds.size.h / 2 - 20, bounds.size.w, 30));
+  text_layer_set_text(loading_text, "Loading...");
+  text_layer_set_background_color(loading_text, WINDOW_BG_COLOR);
+  text_layer_set_text_color(loading_text, GColorWhite);
+  text_layer_set_font(loading_text, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  text_layer_set_text_alignment(loading_text, GTextAlignmentCenter);
+
+  layer_add_child(loading_overlay_layer, text_layer_get_layer(loading_text));
+  loading = true;
 }
 
 static void window_unload(Window *window) {
@@ -76,7 +102,7 @@ void overview_window_push() {
   if(!overview_window) {
     overview_window = window_create();
     #ifdef PBL_COLOR
-      window_set_background_color(overview_window, GColorPictonBlue);
+      window_set_background_color(overview_window, WINDOW_BG_COLOR);
     #endif
     window_set_click_config_provider(overview_window, overview_click_config_provider);
     window_set_window_handlers(overview_window, (WindowHandlers) {
@@ -85,6 +111,15 @@ void overview_window_push() {
     });
   }
   window_stack_push(overview_window, true);
+}
+
+void overview_window_loaded() {
+  if (loading) {
+    layer_remove_from_parent(loading_overlay_layer);
+    text_layer_destroy(loading_text);
+    layer_destroy(loading_overlay_layer);
+    loading = false;
+  }
 }
 
 void overview_window_destroy() {
