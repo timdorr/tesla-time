@@ -5,7 +5,8 @@
 # Feel free to customize this to your needs.
 #
 
-import os.path
+import os
+from sh import uglifyjs
 
 top = '.'
 out = 'build'
@@ -18,6 +19,15 @@ def configure(ctx):
 
 def build(ctx):
     ctx.load('pebble_sdk')
+
+    js_libs = [
+      '../src/js/libs/js-message-queue.js'
+    ]
+
+    js_sources = [
+      '../src/js/main.js',
+    ]
+    built_js = '../src/js/pebble-js-app.js'
 
     build_worker = os.path.exists('worker_src')
     binaries = []
@@ -37,5 +47,12 @@ def build(ctx):
         else:
             binaries.append({'platform': p, 'app_elf': app_elf})
 
+    ctx(rule=concatenate_js, source=' '.join(js_libs + js_sources), target=built_js)
+
+
     ctx.set_group('bundle')
     ctx.pbl_bundle(binaries=binaries, js=ctx.path.ant_glob('src/js/**/*.js'))
+
+def concatenate_js(task):
+  inputs = (input.abspath() for input in task.inputs)
+  uglifyjs(*inputs, o=task.outputs[0].abspath(), b=True, indent_level=2)
