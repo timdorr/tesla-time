@@ -12,7 +12,7 @@ char vehicle_name_buffer[32];
 char charging_state_buffer[16];
 
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
+  // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
   if (key == KEY_RATED_MILES && (int)new_tuple->value->int32 != 0) {
     overview_window_loaded();

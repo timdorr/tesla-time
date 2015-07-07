@@ -21,10 +21,14 @@ def build(ctx):
     ctx.load('pebble_sdk')
 
     js_libs = [
-      '../src/js/libs/js-message-queue.js'
+      '../src/js/libs/js-message-queue.js',
+      '../src/js/libs/reqwest.js'
     ]
 
     js_sources = [
+      '../src/js/utils.js',
+      '../src/js/google.js',
+      '../src/js/tesla.js',
       '../src/js/main.js',
     ]
     built_js = '../src/js/pebble-js-app.js'
