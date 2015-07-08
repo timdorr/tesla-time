@@ -86,7 +86,7 @@ static void window_load(Window *window) {
 
 
   init_text_layer(window_layer, &charger_text, 80, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &charging_state_text, 88, 26, FONT_KEY_GOTHIC_24_BOLD);
+  init_text_layer(window_layer, &charging_state_text, 88, 28, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(charger_text, "CHARGER");
 
