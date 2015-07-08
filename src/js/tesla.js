@@ -25,6 +25,11 @@ function getState(endpoint, callback) {
 }
 
 function postCommand(endpoint, options, callback) {
+	if (options === undefined) { options = {}; }
+	if (callback === undefined) { callback = function(){}; }
+
+	log(telsaApiURL + "/api/1/vehicles/" + vehicleId + "/command/" + endpoint);
+	jlog(options);
   reqwest({
     method: "POST",
     url: telsaApiURL + "/api/1/vehicles/" + vehicleId + "/command/" + endpoint,
@@ -33,7 +38,6 @@ function postCommand(endpoint, options, callback) {
       "Authorization": "Bearer " + accessToken
     },
     type: "json",
-    contentType: "application/json",
     success: function(json) {
       callback(json.response, json);
     },
