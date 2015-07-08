@@ -2,3 +2,4 @@
 #define KEY_RATED_MILES 1
 #define KEY_CHARGING_STATE 2
 #define KEY_LOCATION 3
+#define KEY_COMMAND 4

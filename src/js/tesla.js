@@ -5,7 +5,7 @@ var telsaApiURL = "https://owner-api.teslamotors.com",
 /* Utils */
 function teslaErrorCallback(data) {
   jlog(data);
-  // Pebble.showSimpleNotificationOnPebble("Communication Error", "Couldn't talk to Tesla servers. Check your email and password in the app settings.");
+  Pebble.showSimpleNotificationOnPebble("Communication Error", "Couldn't talk to Tesla servers. Check your email and password in the app settings.");
 }
 
 function getState(endpoint, callback) {
@@ -27,7 +27,7 @@ function getState(endpoint, callback) {
 function postCommand(endpoint, options, callback) {
   reqwest({
     method: "POST",
-    url: telsaApiURL + "/api/1/vehicles/" + vehicleId + endpoint,
+    url: telsaApiURL + "/api/1/vehicles/" + vehicleId + "/command/" + endpoint,
     data: options,
     headers: {
       "Authorization": "Bearer " + accessToken

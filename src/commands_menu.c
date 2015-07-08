@@ -1,12 +1,12 @@
 #include <pebble.h>
 
+#include "appkeys.h"
 #include "commands_menu.h"
 
 static Window *commands_window;
 static SimpleMenuLayer *commands_menu_layer;
 
-#define COMMANDS_MENU_SECTIONS 3
-static SimpleMenuSection commands_menu_sections[COMMANDS_MENU_SECTIONS];
+static SimpleMenuSection commands_menu_sections[3];
 
 /* Vehicle Controls
  *
@@ -15,43 +15,41 @@ static SimpleMenuSection commands_menu_sections[COMMANDS_MENU_SECTIONS];
  * - Unlock Doors
  * - Flash Lights
  * - Honk Horn
- * - Move Roof
  */
-#define COMMANDS_MENU_VEHICLE_ITEMS 6
-static SimpleMenuItem commands_menu_vehicle_items[COMMANDS_MENU_VEHICLE_ITEMS];
+static SimpleMenuItem commands_menu_vehicle_items[5];
 
 /* HVAC
  *
  * - Start HVAC
  * - Stop HVAC
- * - Set Temperature
  */
-#define COMMANDS_MENU_HVAC_ITEMS 3
-static SimpleMenuItem commands_menu_hvac_items[COMMANDS_MENU_HVAC_ITEMS];
+static SimpleMenuItem commands_menu_hvac_items[2];
 
 /* Charging
  *
- * - Start/Stop Charging
+ * - Start Charging
+ * - Stop Charging
  * - Open Charge Port
- * - Set Charge Limit
  */
-#define COMMANDS_MENU_CHARGING_ITEMS 4
-static SimpleMenuItem commands_menu_charging_items[COMMANDS_MENU_CHARGING_ITEMS];
+static SimpleMenuItem commands_menu_charging_items[3];
 
-static void commands_menu_select_callback(int section, int index, void *ctx) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Menu Item %d", index);
+static void send_command(const char* command) {
+  DictionaryIterator *dict;
+  app_message_outbox_begin(&dict);
+  dict_write_cstring(dict, KEY_COMMAND, command);
+  app_message_outbox_send();
 }
 
 static void commands_menu_vehicle_callback(int index, void *ctx) {
-  commands_menu_select_callback(0, index, ctx);
+  send_command(commands_menu_vehicle_items[index].title);
 }
 
 static void commands_menu_hvac_callback(int index, void *ctx) {
-  commands_menu_select_callback(1, index, ctx);
+  send_command(commands_menu_hvac_items[index].title);
 }
 
 static void commands_menu_charging_callback(int index, void *ctx) {
-  commands_menu_select_callback(2, index, ctx);
+  send_command(commands_menu_charging_items[index].title);
 }
 
 static void populate_commands_menu() {
@@ -82,24 +80,14 @@ static void populate_commands_menu() {
     .callback = commands_menu_vehicle_callback
   };
 
-  commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Move Roof",
-    .callback = commands_menu_vehicle_callback
-  };
-
   num_items = 0;
   commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Start HVAC",
+    .title = "Start AC/Heat",
     .callback = commands_menu_hvac_callback
   };
 
   commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Stop HVAC",
-    .callback = commands_menu_hvac_callback
-  };
-
-  commands_menu_hvac_items[num_items++] = (SimpleMenuItem){
-    .title = "Set Temperature",
+    .title = "Stop AC/Heat",
     .callback = commands_menu_hvac_callback
   };
 
@@ -119,26 +107,21 @@ static void populate_commands_menu() {
     .callback = commands_menu_charging_callback
   };
 
-  commands_menu_charging_items[num_items++] = (SimpleMenuItem){
-    .title = "Set Charge Limit",
-    .callback = commands_menu_charging_callback
-  };
-
   commands_menu_sections[0] = (SimpleMenuSection){
     .title = "Vehicle Controls",
-    .num_items = COMMANDS_MENU_VEHICLE_ITEMS,
+    .num_items = ARRAY_LENGTH(commands_menu_vehicle_items),
     .items = commands_menu_vehicle_items,
   };
 
   commands_menu_sections[1] = (SimpleMenuSection){
     .title = "Climate",
-    .num_items = COMMANDS_MENU_HVAC_ITEMS,
+    .num_items = ARRAY_LENGTH(commands_menu_hvac_items),
     .items = commands_menu_hvac_items,
   };
 
   commands_menu_sections[2] = (SimpleMenuSection){
     .title = "Charging",
-    .num_items = COMMANDS_MENU_CHARGING_ITEMS,
+    .num_items = ARRAY_LENGTH(commands_menu_charging_items),
     .items = commands_menu_charging_items,
   };
 }
@@ -149,7 +132,7 @@ static void window_load(Window *window) {
 
   populate_commands_menu();
 
-  commands_menu_layer = simple_menu_layer_create(bounds, window, commands_menu_sections, COMMANDS_MENU_SECTIONS, NULL);
+  commands_menu_layer = simple_menu_layer_create(bounds, window, commands_menu_sections, ARRAY_LENGTH(commands_menu_sections), NULL);
   layer_add_child(window_layer, simple_menu_layer_get_layer(commands_menu_layer));
 }
 

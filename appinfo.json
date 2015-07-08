@@ -14,7 +14,8 @@
     "vehicle_name": 0,
     "rated_miles": 1,
     "charging_state": 2,
-    "location": 3
+    "location": 3,
+    "command": 4
   },
   "resources": {
     "media": [
