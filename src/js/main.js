@@ -27,11 +27,12 @@ Pebble.addEventListener("showConfiguration", function(event) {
 
 
 Pebble.addEventListener("webviewclosed", function(event) {
-  log(event.response);
+	var response = decodeURIComponent(event.response);
+  log(response);
 
-	var settings = JSON.parse(event.response);
+	var settings = JSON.parse(response);
 	if (settings) {
-		localStorage.setItem("settings", event.response);
+		localStorage.setItem("settings", response);
 	}
 });
 
