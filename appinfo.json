@@ -1,9 +1,9 @@
 {
-  "uuid": "017c5e39-ac44-4ae4-8843-0531effe9bc0",
+  "uuid": "deadbeef-beef-4444-8888-123456789abc",
   "shortName": "Tesla Time",
   "longName": "It's time for Tesla!",
   "companyName": "Tim Dorr",
-  "versionLabel": "1.0",
+  "versionLabel": "0.1",
   "sdkVersion": "3",
   "targetPlatforms": ["basalt"],
   "capabilities": ["configurable"],
