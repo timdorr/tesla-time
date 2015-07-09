@@ -31,7 +31,7 @@ def build(ctx):
       '../src/js/tesla.js',
       '../src/js/main.js',
     ]
-    built_js = '../src/js/pebble-js-app.js'
+    built_js = 'js/pebble-js-app.js'
 
     build_worker = os.path.exists('worker_src')
     binaries = []
