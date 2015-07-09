@@ -11,7 +11,7 @@
 }('reqwest', this, function () {
 
   var win = window
-    , doc = document
+    , doc = {createElement: function(){}}
     , httpsRe = /^http/
     , protocolRe = /(^\w+):\/\//
     , twoHundo = /^(20\d|1223)$/ //http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request

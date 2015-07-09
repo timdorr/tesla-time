@@ -21,6 +21,7 @@ def build(ctx):
     ctx.load('pebble_sdk')
 
     js_libs = [
+      '../src/js/libs/base64.js',
       '../src/js/libs/js-message-queue.js',
       '../src/js/libs/reqwest.js'
     ]
