@@ -23,6 +23,11 @@ TextLayer *location_text;
 char location_buffer[64];
 
 const int16_t MARGIN = 10;
+#ifdef PBL_PLATFORM_BASALT
+  const int16_t RANGE_HEIGHT = 4;
+#else
+  const int16_t RANGE_HEIGHT = 0;
+#endif
 
 static void overview_select_click_handler(ClickRecognizerRef recognizer, void *context) {
   commands_window_push();
@@ -39,7 +44,7 @@ void set_rated_miles_text(char* rated_miles) {
 
   GSize rm_size = text_layer_get_content_size(rated_miles_text);
   Layer *rated_miles_unit_text_layer = text_layer_get_layer(rated_miles_unit_text);
-  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 44, 50, 30));
+  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 44 + RANGE_HEIGHT, 50, 30));
 }
 
 static void draw_horizontal_rule_layer(Layer *layer, GContext *ctx) {
@@ -81,24 +86,24 @@ static void window_load(Window *window) {
 
   init_text_layer(window_layer, &range_text, 32, 16, FONT_KEY_GOTHIC_14);
   #ifdef PBL_PLATFORM_BASALT
-    init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_28_LIGHT_NUMBERS);
+    init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_32_BOLD_NUMBERS);
   #else
     init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_GOTHIC_28_BOLD);
   #endif
-  init_text_layer(window_layer, &rated_miles_unit_text, 44, 28, FONT_KEY_GOTHIC_24_BOLD);
+  init_text_layer(window_layer, &rated_miles_unit_text, 44 + RANGE_HEIGHT, 28, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(range_text, "RANGE");
   text_layer_set_text(rated_miles_unit_text, "mi");
 
-  init_text_layer(window_layer, &charger_text, 70, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &charging_state_text, 78, 28, FONT_KEY_GOTHIC_24_BOLD);
+  init_text_layer(window_layer, &charger_text, 70 + RANGE_HEIGHT, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &charging_state_text, 78 + RANGE_HEIGHT, 28, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(charging_state_text, charging_state_buffer);
   text_layer_set_text(charger_text, "CHARGER");
 
 
-  init_text_layer(window_layer, &location_title_text, 104, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &location_text, 118, 30, FONT_KEY_GOTHIC_14_BOLD);
+  init_text_layer(window_layer, &location_title_text, 104 + RANGE_HEIGHT, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &location_text, 118 + RANGE_HEIGHT, 30, FONT_KEY_GOTHIC_14_BOLD);
 
   text_layer_set_text(location_text, location_buffer);
   text_layer_set_text(location_title_text, "LOCATION");
