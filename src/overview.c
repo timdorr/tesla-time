@@ -39,13 +39,17 @@ void set_rated_miles_text(char* rated_miles) {
 
   GSize rm_size = text_layer_get_content_size(rated_miles_text);
   Layer *rated_miles_unit_text_layer = text_layer_get_layer(rated_miles_unit_text);
-  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 50, 50, 30));
+  layer_set_frame(rated_miles_unit_text_layer, GRect(rm_size.w + 11, 44, 50, 30));
 }
 
 static void draw_horizontal_rule_layer(Layer *layer, GContext *ctx) {
   const GRect bounds = layer_get_bounds(layer);
 
-  graphics_context_set_stroke_color(ctx, GColorWhite);
+  #ifdef PBL_PLATFORM_BASALT
+    graphics_context_set_stroke_color(ctx, GColorWhite);
+  #else
+    graphics_context_set_stroke_color(ctx, GColorBlack);
+  #endif
   graphics_draw_line(ctx, GPoint(0, 0), GPoint(bounds.size.w, 0));
 }
 
@@ -55,7 +59,9 @@ static GRect init_text_layer(Layer *parent_layer, TextLayer **text_layer, int16_
 
   *text_layer = text_layer_create(frame);
   text_layer_set_background_color(*text_layer, GColorClear);
-  text_layer_set_text_color(*text_layer, GColorWhite);
+  #ifdef PBL_PLATFORM_BASALT
+    text_layer_set_text_color(*text_layer, GColorWhite);
+  #endif
   text_layer_set_font(*text_layer, fonts_get_system_font(font));
   text_layer_set_overflow_mode(*text_layer, GTextOverflowModeFill);
   layer_add_child(parent_layer, text_layer_get_layer(*text_layer));
@@ -74,21 +80,25 @@ static void window_load(Window *window) {
   text_layer_set_text(vehicle_name_text, vehicle_name_buffer);
 
   init_text_layer(window_layer, &range_text, 32, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_38_BOLD_NUMBERS);
-  init_text_layer(window_layer, &rated_miles_unit_text, 50, 30, FONT_KEY_GOTHIC_28_BOLD);
+  #ifdef PBL_PLATFORM_BASALT
+    init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_28_LIGHT_NUMBERS);
+  #else
+    init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_GOTHIC_28_BOLD);
+  #endif
+  init_text_layer(window_layer, &rated_miles_unit_text, 44, 28, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(range_text, "RANGE");
   text_layer_set_text(rated_miles_unit_text, "mi");
 
-  init_text_layer(window_layer, &charger_text, 80, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &charging_state_text, 88, 28, FONT_KEY_GOTHIC_24_BOLD);
+  init_text_layer(window_layer, &charger_text, 70, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &charging_state_text, 78, 28, FONT_KEY_GOTHIC_24_BOLD);
 
   text_layer_set_text(charging_state_text, charging_state_buffer);
   text_layer_set_text(charger_text, "CHARGER");
 
 
-  init_text_layer(window_layer, &location_title_text, 114, 16, FONT_KEY_GOTHIC_14);
-  init_text_layer(window_layer, &location_text, 128, 30, FONT_KEY_GOTHIC_14_BOLD);
+  init_text_layer(window_layer, &location_title_text, 104, 16, FONT_KEY_GOTHIC_14);
+  init_text_layer(window_layer, &location_text, 118, 30, FONT_KEY_GOTHIC_14_BOLD);
 
   text_layer_set_text(location_text, location_buffer);
   text_layer_set_text(location_title_text, "LOCATION");
