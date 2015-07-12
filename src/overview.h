@@ -8,7 +8,6 @@ extern TextLayer *charging_state_text;
 extern TextLayer *location_text;
 
 void overview_window_push();
-void overview_window_loaded();
 void overview_window_destroy();
 
 void set_rated_miles_text(char* rated_miles);

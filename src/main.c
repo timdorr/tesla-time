@@ -2,21 +2,26 @@
 
 #include "utils.h"
 #include "appkeys.h"
+#include "intro.h"
 #include "overview.h"
 #include "commands_menu.h"
+
+bool loading;
 
 static AppSync app_sync;
 static uint8_t* app_sync_buffer;
 
 char vehicle_name_buffer[32];
 char charging_state_buffer[16];
-char location_buffer[48];
+char location_buffer[64];
 
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
-  if (key == KEY_RATED_MILES && (int)new_tuple->value->int32 != 0) {
-    overview_window_loaded();
+  if (loading && key == KEY_RATED_MILES && (int)new_tuple->value->int32 != 0) {
+    loading = false;
+    overview_window_push();
+    intro_window_destroy();
   }
 
   static char rated_miles_buffer[4];
@@ -24,7 +29,9 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
   switch(key) {
     case KEY_VEHICLE_NAME:
       snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%s", upcase((char*)new_tuple->value->cstring));
-      text_layer_set_text(vehicle_name_text, vehicle_name_buffer);
+      if (vehicle_name_text) {
+        text_layer_set_text(vehicle_name_text, vehicle_name_buffer);
+      }
     break;
     case KEY_RATED_MILES:
       snprintf(rated_miles_buffer, sizeof(rated_miles_buffer), "%d", (int)new_tuple->value->int32);
@@ -32,11 +39,15 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     break;
     case KEY_CHARGING_STATE:
       snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%s", (char*)new_tuple->value->cstring);
-      text_layer_set_text(charging_state_text, charging_state_buffer);
+      if (vehicle_name_text) {
+        text_layer_set_text(charging_state_text, charging_state_buffer);
+      }
     break;
     case KEY_LOCATION:
       snprintf(location_buffer, sizeof(location_buffer), "%s", (char*)new_tuple->value->cstring);
-      text_layer_set_text(location_text, location_buffer);
+      if (vehicle_name_text) {
+        text_layer_set_text(location_text, location_buffer);
+      }
     break;
   }
 }
@@ -46,13 +57,14 @@ static void sync_error_handler(DictionaryResult dict_error, AppMessageResult app
 }
 
 static void init() {
-  overview_window_push();
+  loading = true;
+  intro_window_push();
 
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
   snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%-32s", "Model S");
   snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%-16s", "Unknown");
-  snprintf(location_buffer, sizeof(location_buffer), "%-48s", "Unknown");
+  snprintf(location_buffer, sizeof(location_buffer), "%-64s", "Unknown");
 
   Tuplet initial_values[] = {
     TupletStaticCString(KEY_VEHICLE_NAME, vehicle_name_buffer),
@@ -74,7 +86,11 @@ static void init() {
 }
 
 static void deinit() {
-  overview_window_destroy();
+  if (loading) {
+    intro_window_destroy();
+  } else {
+    overview_window_destroy();
+  }
 
   app_sync_deinit(&app_sync);
   free(app_sync_buffer);
