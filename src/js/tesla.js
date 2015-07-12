@@ -6,6 +6,7 @@ var telsaApiURL = "https://owner-api.teslamotors.com",
 function teslaErrorCallback(data) {
   jlog(data);
   Pebble.showSimpleNotificationOnPebble("Communication Error", "Couldn't talk to Tesla servers. Check your email and password in the app settings.");
+	localStorage.removeItem("accessToken");
 }
 
 function getState(endpoint, callback) {
