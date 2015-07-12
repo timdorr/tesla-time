@@ -54,9 +54,8 @@ def build(ctx):
 
     ctx(rule=concatenate_js, source=' '.join(js_libs + js_sources), target=built_js)
 
-
     ctx.set_group('bundle')
-    ctx.pbl_bundle(binaries=binaries, js=ctx.path.ant_glob('src/js/**/*.js'))
+    ctx.pbl_bundle(binaries=binaries, js=built_js)
 
 def concatenate_js(task):
   inputs = (input.abspath() for input in task.inputs)
