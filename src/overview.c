@@ -6,6 +6,7 @@
 static Window *overview_window;
 
 TextLayer *vehicle_name_text;
+char vehicle_name_buffer[32];
 
 Layer *horizontal_rule_layer;
 
@@ -15,9 +16,11 @@ TextLayer *rated_miles_unit_text;
 
 TextLayer *charger_text;
 TextLayer *charging_state_text;
+char charging_state_buffer[16];
 
 TextLayer *location_title_text;
 TextLayer *location_text;
+char location_buffer[64];
 
 const int16_t MARGIN = 10;
 
@@ -68,6 +71,8 @@ static void window_load(Window *window) {
 
   init_text_layer(window_layer, &vehicle_name_text, 5, 20, FONT_KEY_GOTHIC_18_BOLD);
 
+  text_layer_set_text(vehicle_name_text, vehicle_name_buffer);
+
   init_text_layer(window_layer, &range_text, 32, 16, FONT_KEY_GOTHIC_14);
   init_text_layer(window_layer, &rated_miles_text, 40, 40, FONT_KEY_LECO_38_BOLD_NUMBERS);
   init_text_layer(window_layer, &rated_miles_unit_text, 50, 30, FONT_KEY_GOTHIC_28_BOLD);
@@ -75,16 +80,17 @@ static void window_load(Window *window) {
   text_layer_set_text(range_text, "RANGE");
   text_layer_set_text(rated_miles_unit_text, "mi");
 
-
   init_text_layer(window_layer, &charger_text, 80, 16, FONT_KEY_GOTHIC_14);
   init_text_layer(window_layer, &charging_state_text, 88, 28, FONT_KEY_GOTHIC_24_BOLD);
 
+  text_layer_set_text(charging_state_text, charging_state_buffer);
   text_layer_set_text(charger_text, "CHARGER");
 
 
   init_text_layer(window_layer, &location_title_text, 114, 16, FONT_KEY_GOTHIC_14);
   init_text_layer(window_layer, &location_text, 128, 30, FONT_KEY_GOTHIC_14_BOLD);
 
+  text_layer_set_text(location_text, location_buffer);
   text_layer_set_text(location_title_text, "LOCATION");
   text_layer_set_overflow_mode(location_text, GTextOverflowModeTrailingEllipsis);
 
@@ -102,7 +108,7 @@ static void window_unload(Window *window) {
 }
 
 void overview_window_push() {
-  if(!overview_window) {
+  if (!overview_window) {
     overview_window = window_create();
     #ifdef PBL_COLOR
       window_set_background_color(overview_window, WINDOW_BG_COLOR);
@@ -114,6 +120,12 @@ void overview_window_push() {
     });
   }
   window_stack_push(overview_window, true);
+}
+
+void overview_window_dirty() {
+  if (overview_window) {
+    layer_mark_dirty(window_get_root_layer(overview_window));
+  }
 }
 
 void overview_window_destroy() {
