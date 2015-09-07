@@ -5,3 +5,5 @@ src/js/pebble-js-app.js
 
 # Ignore waf lock file
 .lock-waf*
+
+.tags
