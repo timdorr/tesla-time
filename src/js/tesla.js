@@ -1,6 +1,7 @@
 var telsaApiURL = "https://owner-api.teslamotors.com",
 		clientId = atob("ZTRhOTk0OWZjZmEwNDA2OGY1OWFiYjVhNjU4ZjJiYWMwYTM0MjhlNDY1MjMxNTQ5MGI2NTlkNWFiM2YzNWE5ZQ=="),
-		clientSecret = atob("Yzc1ZjE0YmJhZGM4YmVlM2E3NTk0NDEyYzMxNDE2ZjgzMDAyNTZkNzY2OGVhN2U2ZTdmMDY3MjdiZmI5ZDIyMA==");
+		clientSecret = atob("Yzc1ZjE0YmJhZGM4YmVlM2E3NTk0NDEyYzMxNDE2ZjgzMDAyNTZkNzY2OGVhN2U2ZTdmMDY3MjdiZmI5ZDIyMA=="),
+		loadingStatus;
 
 /* Utils */
 function teslaErrorCallback(data) {
@@ -49,6 +50,8 @@ function postCommand(endpoint, options, callback) {
 /* Login */
 
 function doLogin() {
+	MessageQueue.sendAppMessage({loading_status: 2});
+
   reqwest({
     method: "POST",
     url: telsaApiURL + "/oauth/token",
@@ -75,6 +78,8 @@ function doLogin() {
 /* State */
 
 function getVehicle() {
+	MessageQueue.sendAppMessage({loading_status: 3});
+
   reqwest({
     method: "GET",
     url: telsaApiURL + "/api/1/vehicles",
@@ -97,16 +102,28 @@ function getVehicle() {
 }
 
 function getOverview() {
+	loadingStatus = 4;
+	MessageQueue.sendAppMessage({loading_status: loadingStatus});
+
   getState("/data_request/vehicle_state", function(response) {
+		loadingStatus += 8;
+		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+
 		MessageQueue.sendAppMessage({vehicle_name: response.vehicle_name});
 	});
 
 	getState("/data_request/charge_state", function(response) {
+		loadingStatus += 16;
+		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+
 		MessageQueue.sendAppMessage({rated_miles: response.battery_range});
 		MessageQueue.sendAppMessage({charging_state: response.charging_state});
 	});
 
 	getState("/data_request/drive_state", function(response) {
+		loadingStatus += 32;
+		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+
 		reverseGeocode(response.latitude, response.longitude, function(json) {
       Pebble.sendAppMessage({location: json.results[0].formatted_address.substring(0,48)});
     });

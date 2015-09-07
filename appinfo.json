@@ -11,11 +11,12 @@
     "watchface": false
   },
   "appKeys": {
-    "vehicle_name": 0,
-    "rated_miles": 1,
-    "charging_state": 2,
-    "location": 3,
-    "command": 4
+    "loading_status": 0,
+    "vehicle_name": 1,
+    "rated_miles": 2,
+    "charging_state": 3,
+    "location": 4,
+    "command": 5
   },
   "resources": {
     "media": [

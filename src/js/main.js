@@ -12,6 +12,8 @@ Pebble.addEventListener("ready", function(event) {
 				getOverview();
 			}
 		}
+	} else {
+		MessageQueue.sendAppMessage({loading_status: 1});
 	}
 });
 
@@ -32,6 +34,7 @@ Pebble.addEventListener("webviewclosed", function(event) {
 
 	var settings = JSON.parse(response);
 	if (settings) {
+		localStorage.clear();
 		localStorage.setItem("settings", response);
 	}
 });

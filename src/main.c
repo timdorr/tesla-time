@@ -2,7 +2,7 @@
 
 #include "utils.h"
 #include "appkeys.h"
-#include "intro.h"
+#include "loading.h"
 #include "overview.h"
 #include "commands_menu.h"
 
@@ -10,19 +10,28 @@ bool loading;
 
 static AppSync app_sync;
 static uint8_t* app_sync_buffer;
+static int loading_status;
 
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
-  if (loading && key == KEY_RATED_MILES && (int)new_tuple->value->int32 != 0) {
-    loading = false;
-    intro_window_destroy();
-    overview_window_push();
-  }
-
   static char rated_miles_buffer[4];
 
   switch(key) {
+    case KEY_LOADING_STATUS:
+      loading_status = (int)new_tuple->value->int32;
+      if (loading_status == 1) {
+        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Login via settings!");
+      } else if (loading_status == 2) {
+        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Contacting Tesla...");
+      } else if (loading_status == 3) {
+        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Retrieving vehicle...");
+      } else if (loading_status >= 4) {
+        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Getting vehicle status...");
+      }
+
+      loading_window_dirty();
+    break;
     case KEY_VEHICLE_NAME:
       snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%s", upcase((char*)new_tuple->value->cstring));
     break;
@@ -38,6 +47,12 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     break;
   }
 
+  if (loading && loading_status == 60) {
+    loading = false;
+    loading_window_destroy();
+    overview_window_push();
+  }
+
   overview_window_dirty();
 }
 
@@ -47,15 +62,17 @@ static void sync_error_handler(DictionaryResult dict_error, AppMessageResult app
 
 static void init() {
   loading = true;
-  intro_window_push();
+  loading_window_push();
 
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 
-  snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%-32s", "Model S");
+  snprintf(loading_status_buffer, sizeof(loading_status_buffer), " ");
+  snprintf(vehicle_name_buffer,   sizeof(vehicle_name_buffer),   "%-32s", "Model S");
   snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%-16s", "Unknown");
-  snprintf(location_buffer, sizeof(location_buffer), "%-64s", "Unknown");
+  snprintf(location_buffer,       sizeof(location_buffer),       "%-64s", "Unknown");
 
   Tuplet initial_values[] = {
+    TupletInteger(KEY_LOADING_STATUS, 0),
     TupletStaticCString(KEY_VEHICLE_NAME, vehicle_name_buffer),
     TupletInteger(KEY_RATED_MILES, 0),
     TupletStaticCString(KEY_CHARGING_STATE, charging_state_buffer),
@@ -76,7 +93,7 @@ static void init() {
 
 static void deinit() {
   if (loading) {
-    intro_window_destroy();
+    loading_window_destroy();
   } else {
     overview_window_destroy();
   }
