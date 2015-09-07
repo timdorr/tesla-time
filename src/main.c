@@ -27,7 +27,14 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
       } else if (loading_status == 3) {
         snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Retrieving vehicle...");
       } else if (loading_status >= 4) {
-        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Getting vehicle status...");
+        snprintf(
+          loading_status_buffer,
+          sizeof(loading_status_buffer),
+          "Getting status (%s%s%s)...",
+          (loading_status & 8)  == 0 ? "V" : "",
+          (loading_status & 16) == 0 ? "C" : "",
+          (loading_status & 32) == 0 ? "D" : ""
+        );
       }
 
       loading_window_dirty();
