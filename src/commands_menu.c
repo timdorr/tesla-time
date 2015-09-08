@@ -61,12 +61,12 @@ static void populate_commands_menu() {
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Lock Doors",
+    .title = "Unlock Doors",
     .callback = commands_menu_vehicle_callback
   };
 
   commands_menu_vehicle_items[num_items++] = (SimpleMenuItem){
-    .title = "Unlock Doors",
+    .title = "Lock Doors",
     .callback = commands_menu_vehicle_callback
   };
 

@@ -48,8 +48,8 @@ Pebble.addEventListener('appmessage', function(event) {
 						 function() {
 						   Pebble.showSimpleNotificationOnPebble("Car Started", "You have 2 minutes to start driving.");
 						 }],
-			       "Lock Doors": ["door_lock"],
 			     "Unlock Doors": ["door_unlock"],
+			       "Lock Doors": ["door_lock"],
 			     "Flash Lights": ["flash_lights"],
 			        "Honk Horn": ["honk_horn"],
 			    "Start AC/Heat": ["auto_conditioning_start"],
