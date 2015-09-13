@@ -37,7 +37,7 @@ static void overview_click_config_provider(void* context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, overview_select_click_handler);
 }
 
-void set_rated_range_text(int rated_range, bool is_metric) {
+void set_rated_range_text(float rated_range, bool is_metric) {
   if (!overview_window) { return; }
 
   static char rated_range_buffer[4];
@@ -46,7 +46,7 @@ void set_rated_range_text(int rated_range, bool is_metric) {
     snprintf(rated_range_buffer, sizeof(rated_range_buffer), "%d", (int)(rated_range * 1.609344));
     text_layer_set_text(rated_range_unit_text, "km");
   } else {
-    snprintf(rated_range_buffer, sizeof(rated_range_buffer), "%d", rated_range);
+    snprintf(rated_range_buffer, sizeof(rated_range_buffer), "%d", (int)rated_range);
   }
 
   text_layer_set_text(rated_range_text, rated_range_buffer);

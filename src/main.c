@@ -15,7 +15,7 @@ static int loading_status;
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
-  static int rated_range;
+  static float rated_range;
   static bool is_metric = false;
 
   switch(key) {
@@ -49,7 +49,7 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
       set_rated_range_text(rated_range, is_metric);
     break;
     case KEY_RATED_RANGE:
-      rated_range = (int)new_tuple->value->int32;
+      rated_range = (float)new_tuple->value->int32 / 100;
       set_rated_range_text(rated_range, is_metric);
     break;
     case KEY_CHARGING_STATE:

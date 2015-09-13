@@ -10,4 +10,4 @@ void overview_window_push();
 void overview_window_dirty();
 void overview_window_destroy();
 
-void set_rated_range_text(int rated_range, bool is_metric);
+void set_rated_range_text(float rated_range, bool is_metric);

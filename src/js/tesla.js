@@ -116,7 +116,7 @@ function getOverview() {
 		loadingStatus += 16;
 		MessageQueue.sendAppMessage({loading_status: loadingStatus});
 
-		MessageQueue.sendAppMessage({rated_range: response.battery_range});
+		MessageQueue.sendAppMessage({rated_range: response.battery_range * 100});
 		MessageQueue.sendAppMessage({charging_state: response.charging_state});
 	});
 
