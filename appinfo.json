@@ -3,7 +3,7 @@
   "shortName": "Tesla Time",
   "longName": "It's time for Tesla!",
   "companyName": "Tim Dorr",
-  "versionLabel": "0.3",
+  "versionLabel": "0.4",
   "sdkVersion": "3",
   "targetPlatforms": ["aplite", "basalt"],
   "capabilities": ["configurable"],
