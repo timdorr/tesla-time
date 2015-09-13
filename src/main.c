@@ -15,7 +15,8 @@ static int loading_status;
 static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, const Tuple *old_tuple, void *context) {
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "App Sync Key Received: %lu", key);
 
-  static char rated_miles_buffer[4];
+  static int rated_range;
+  static bool is_metric = false;
 
   switch(key) {
     case KEY_LOADING_STATUS:
@@ -30,10 +31,11 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
         snprintf(
           loading_status_buffer,
           sizeof(loading_status_buffer),
-          "Getting status (%s%s%s)...",
+          "Getting status (%s%s%s%s)...",
           (loading_status & 8)  == 0 ? "V" : "",
           (loading_status & 16) == 0 ? "C" : "",
-          (loading_status & 32) == 0 ? "D" : ""
+          (loading_status & 32) == 0 ? "D" : "",
+          (loading_status & 64) == 0 ? "G" : ""
         );
       }
 
@@ -42,9 +44,13 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     case KEY_VEHICLE_NAME:
       snprintf(vehicle_name_buffer, sizeof(vehicle_name_buffer), "%s", upcase((char*)new_tuple->value->cstring));
     break;
-    case KEY_RATED_MILES:
-      snprintf(rated_miles_buffer, sizeof(rated_miles_buffer), "%d", (int)new_tuple->value->int32);
-      set_rated_miles_text(rated_miles_buffer);
+    case KEY_IS_METRIC:
+      if ((int)new_tuple->value->int32 == 1) { is_metric = true; }
+      set_rated_range_text(rated_range, is_metric);
+    break;
+    case KEY_RATED_RANGE:
+      rated_range = (int)new_tuple->value->int32;
+      set_rated_range_text(rated_range, is_metric);
     break;
     case KEY_CHARGING_STATE:
       snprintf(charging_state_buffer, sizeof(charging_state_buffer), "%s", (char*)new_tuple->value->cstring);
@@ -54,7 +60,7 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     break;
   }
 
-  if (loading && loading_status == 60) {
+  if (loading && loading_status == 124) {
     loading = false;
     loading_window_destroy();
     overview_window_push();
@@ -81,7 +87,8 @@ static void init() {
   Tuplet initial_values[] = {
     TupletInteger(KEY_LOADING_STATUS, 0),
     TupletStaticCString(KEY_VEHICLE_NAME, vehicle_name_buffer),
-    TupletInteger(KEY_RATED_MILES, 0),
+    TupletInteger(KEY_IS_METRIC, 0),
+    TupletInteger(KEY_RATED_RANGE, 0),
     TupletStaticCString(KEY_CHARGING_STATE, charging_state_buffer),
     TupletStaticCString(KEY_LOCATION, location_buffer)
   };

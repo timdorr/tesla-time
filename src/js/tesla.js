@@ -116,7 +116,7 @@ function getOverview() {
 		loadingStatus += 16;
 		MessageQueue.sendAppMessage({loading_status: loadingStatus});
 
-		MessageQueue.sendAppMessage({rated_miles: response.battery_range});
+		MessageQueue.sendAppMessage({rated_range: response.battery_range});
 		MessageQueue.sendAppMessage({charging_state: response.charging_state});
 	});
 
@@ -127,5 +127,12 @@ function getOverview() {
 		reverseGeocode(response.latitude, response.longitude, function(json) {
       Pebble.sendAppMessage({location: json.results[0].formatted_address.substring(0,48)});
     });
+	});
+
+	getState("/data_request/gui_settings", function(response) {
+		loadingStatus += 64;
+		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+
+		MessageQueue.sendAppMessage({is_metric: response.gui_distance_units === "mi/hr" ? 0 : 1});
 	});
 }

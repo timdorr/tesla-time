@@ -13,10 +13,11 @@
   "appKeys": {
     "loading_status": 0,
     "vehicle_name": 1,
-    "rated_miles": 2,
-    "charging_state": 3,
-    "location": 4,
-    "command": 5
+    "is_metric": 2,
+    "rated_range": 3,
+    "charging_state": 4,
+    "location": 5,
+    "command": 6
   },
   "resources": {
     "media": [
