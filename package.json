@@ -1,0 +1,48 @@
+{
+  "version": "0.4.0",
+  "author": "Tim Dorr",
+  "private": true,
+  "dependencies": {},
+  "keywords": [
+    "pebble-app"
+  ],
+  "pebble": {
+    "sdkVersion": "3",
+    "resources": {
+      "media": [
+        {
+          "menuIcon": true,
+          "type": "png",
+          "name": "IMAGE_MENU_ICON",
+          "file": "icon.28.png"
+        }
+      ]
+    },
+    "projectType": "native",
+    "uuid": "deadbeef-beef-4444-8888-123456789abc",
+    "messageKeys": {
+      "is_metric": 2,
+      "command": 6,
+      "location": 5,
+      "vehicle_name": 1,
+      "loading_status": 0,
+      "charging_state": 4,
+      "rated_range": 3
+    },
+    "enableMultiJS": false,
+    "displayName": "It's time for Tesla!",
+    "watchapp": {
+      "onlyShownOnCommunication": false,
+      "hiddenApp": false,
+      "watchface": false
+    },
+    "targetPlatforms": [
+      "aplite",
+      "basalt"
+    ],
+    "capabilities": [
+      "configurable"
+    ]
+  },
+  "name": "Tesla Time"
+}
