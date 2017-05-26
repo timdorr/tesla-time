@@ -102,37 +102,20 @@ function getVehicle() {
 }
 
 function getOverview() {
-	loadingStatus = 4;
-	MessageQueue.sendAppMessage({loading_status: loadingStatus});
+	MessageQueue.sendAppMessage({loading_status: 4});
 
-  getState("/data_request/vehicle_state", function(response) {
-		loadingStatus += 8;
-		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+  getState("/data", function(response) {
+		MessageQueue.sendAppMessage({loading_status: 5});
 
-		MessageQueue.sendAppMessage({vehicle_name: response.vehicle_name});
-	});
+		MessageQueue.sendAppMessage({vehicle_name: response.vehicle_state.vehicle_name});
 
-	getState("/data_request/charge_state", function(response) {
-		loadingStatus += 16;
-		MessageQueue.sendAppMessage({loading_status: loadingStatus});
+		MessageQueue.sendAppMessage({rated_range: response.charge_state.battery_range * 100});
+		MessageQueue.sendAppMessage({charging_state: response.charge_state.charging_state});
 
-		MessageQueue.sendAppMessage({rated_range: response.battery_range * 100});
-		MessageQueue.sendAppMessage({charging_state: response.charging_state});
-	});
+		MessageQueue.sendAppMessage({is_metric: response.gui_settings.gui_distance_units === "mi/hr" ? 0 : 1});
 
-	getState("/data_request/drive_state", function(response) {
-		loadingStatus += 32;
-		MessageQueue.sendAppMessage({loading_status: loadingStatus});
-
-		reverseGeocode(response.latitude, response.longitude, function(json) {
+		reverseGeocode(response.drive_state.latitude, response.drive_state.longitude, function(json) {
       Pebble.sendAppMessage({location: json.results[0].formatted_address.substring(0,48)});
     });
-	});
-
-	getState("/data_request/gui_settings", function(response) {
-		loadingStatus += 64;
-		MessageQueue.sendAppMessage({loading_status: loadingStatus});
-
-		MessageQueue.sendAppMessage({is_metric: response.gui_distance_units === "mi/hr" ? 0 : 1});
 	});
 }

@@ -27,16 +27,8 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
         snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Contacting Tesla...");
       } else if (loading_status == 3) {
         snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Retrieving vehicle...");
-      } else if (loading_status >= 4) {
-        snprintf(
-          loading_status_buffer,
-          sizeof(loading_status_buffer),
-          "Getting status (%s%s%s%s)...",
-          (loading_status & 8)  == 0 ? "V" : "",
-          (loading_status & 16) == 0 ? "C" : "",
-          (loading_status & 32) == 0 ? "D" : "",
-          (loading_status & 64) == 0 ? "G" : ""
-        );
+      } else if (loading_status == 4) {
+        snprintf(loading_status_buffer, sizeof(loading_status_buffer), "Getting status...");
       }
 
       loading_window_dirty();
@@ -60,7 +52,7 @@ static void sync_changed_handler(const uint32_t key, const Tuple *new_tuple, con
     break;
   }
 
-  if (loading && loading_status == 124) {
+  if (loading && loading_status == 5) {
     loading = false;
     loading_window_destroy();
     overview_window_push();
