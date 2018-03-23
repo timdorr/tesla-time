@@ -2,6 +2,7 @@
 
 #include "overview.h"
 #include "commands_menu.h"
+#include "appkeys.h"
 
 static Window *overview_window;
 
@@ -33,8 +34,25 @@ static void overview_select_click_handler(ClickRecognizerRef recognizer, void *c
   commands_window_push();
 }
 
+static void send_command(const char* command) {
+  DictionaryIterator *dict;
+  app_message_outbox_begin(&dict);
+  dict_write_cstring(dict, KEY_COMMAND, command);
+  app_message_outbox_send();
+}
+
+static void overview_up_click_handler(ClickRecognizerRef recognizer, void *context) {
+  send_command("Previous Car");
+}
+
+static void overview_down_click_handler(ClickRecognizerRef recognizer, void *context) {
+  send_command("Next Car");
+}
+
 static void overview_click_config_provider(void* context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, overview_select_click_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, overview_up_click_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, overview_down_click_handler);
 }
 
 void set_rated_range_text(float rated_range, bool is_metric) {

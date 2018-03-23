@@ -89,13 +89,20 @@ function getVehicle() {
     type: "html",
     contentType: "application/json",
     success: function(data) {
-  		// Vehicle IDs are BIGINTs, so JSON cuts off the bits. Have to scrape it out as a string.
-  		var matches = /"id":(\d*)/.exec(data);
-  		vehicleId = matches[1];
-  		localStorage.setItem("vehicleId", vehicleId);
+			var vehicles = [];
+			var re = /"id":(\d*)/g
+			var matches;
+			log (data);
+			// Vehicle IDs are BIGINTs, so JSON cuts off the bits. Have to scrape it out as a string.
+			while ((matches = re.exec(data))!== null){
+				vehicleId = matches[1];
+				vehicles.push(vehicleId)
   		log("Got a vehicle! " + vehicleId);
-
-  		getOverview();
+			}
+			log("Found " + vehicles.length + " vehicles");
+			localStorage.setItem("vehicles", JSON.stringify(vehicles));
+			localStorage.setItem("vehicleId", vehicleId);
+			getOverview();
   	},
     error: teslaErrorCallback
   });

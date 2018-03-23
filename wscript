@@ -6,7 +6,7 @@
 #
 
 import os
-from sh import uglifyjs
+import sh
 
 top = '.'
 out = 'build'
@@ -59,4 +59,5 @@ def build(ctx):
 
 def concatenate_js(task):
   inputs = (input.abspath() for input in task.inputs)
+  uglifyjs = sh.Command("node_modules/.bin/uglifyjs")
   uglifyjs(*inputs, o=task.outputs[0].abspath(), b=True, indent_level=2)
