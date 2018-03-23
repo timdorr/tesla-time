@@ -5,6 +5,7 @@ Pebble.addEventListener("ready", function(event) {
 		if (!accessToken) {
 			doLogin();
 		} else {
+			vehicles = JSON.parse(localStorage.getItem("vehicles"));
 			vehicleId = localStorage.getItem("vehicleId");
 			if (!vehicleId) {
 				getVehicle();
@@ -58,9 +59,21 @@ Pebble.addEventListener('appmessage', function(event) {
 			    "Stop Charging": ["charge_stop"],
 			   "Start Charging": ["charge_start"]
 		 };
-
+	index = vehicles.indexOf(vehicleId);
 	if (message.command && commands[message.command]) {
 		postCommand.apply(this, commands[message.command]);
+	} else if (vehicles.length > 1 && message.command == "Next Car") {
+		newIndex = (index + 1) % vehicles.length;
+		vehicleId = vehicles[newIndex];
+		log("Switching to Next Car " + vehicleId + " "+ (newIndex + 1) + " of " + vehicles.length);
+		localStorage.setItem("vehicleId", vehicleId);
+		getOverview();
+	} else if (vehicles.length > 1 && message.command == "Previous Car") {
+		newIndex = ((index - 1 + vehicles.length) % vehicles.length);
+		vehicleId = vehicles[newIndex];
+		log("Switching to Previous Car " + vehicleId + " "+ (newIndex + 1) + " of " + vehicles.length);
+		localStorage.setItem("vehicleId", vehicleId);
+		getOverview();
 	} else {
 		log("Unknown command sent!");
 		jlog(message);
